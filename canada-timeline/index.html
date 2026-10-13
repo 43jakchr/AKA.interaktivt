@@ -1,1 +1,197 @@
 
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Territorial Evolution of Canada</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: Roboto, Arial, sans-serif;
+      background: #ffffff;
+      color: #222;
+      margin: 0;
+      padding: 15px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    h2 {
+      font-size: 24px;
+      margin: 0 0 15px;
+    }
+
+    .map {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 12px;
+    }
+
+    .controls {
+      background: #f2f6f5;
+      padding: 20px;
+      border-radius: 12px;
+      margin-top: 15px;
+    }
+
+    .timeline {
+      width: 100%;
+      accent-color: #347d76;
+      cursor: pointer;
+    }
+
+    .labels {
+      display: flex;
+      justify-content: space-between;
+      color: #555;
+      font-size: 13px;
+      margin-top: 8px;
+    }
+
+    .buttons {
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    button {
+      background: #347d76;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      padding: 12px 20px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    button:hover {
+      background: #27635d;
+    }
+
+    button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .counter {
+      text-align: center;
+      font-size: 14px;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    @media (max-width: 500px) {
+      .controls {
+        padding: 15px;
+      }
+
+      .buttons button {
+        flex: 1;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h2>Territorial Evolution of Canada</h2>
+
+    <img
+      id="canadaMap"
+      class="map"
+      src="images/00.webp"
+      alt="Historical map showing the territorial evolution of Canada"
+    >
+
+    <div class="controls">
+
+      <div class="counter" id="counter">
+        Map 1 of 20
+      </div>
+
+      <input
+        type="range"
+        id="timeline"
+        class="timeline"
+        min="0"
+        max="19"
+        step="1"
+        value="0"
+        aria-label="Select a historical map"
+      >
+
+      <div class="labels">
+        <span>1867</span>
+        <span>2003</span>
+      </div>
+
+      <div class="buttons">
+        <button id="previous" onclick="changeFrame(-1)">
+          &#8592; Previous
+        </button>
+
+        <button id="next" onclick="changeFrame(1)">
+          Next &#8594;
+        </button>
+      </div>
+
+    </div>
+
+  </div>
+
+  <script>
+    const timeline = document.getElementById("timeline");
+    const map = document.getElementById("canadaMap");
+    const counter = document.getElementById("counter");
+    const previous = document.getElementById("previous");
+    const next = document.getElementById("next");
+
+    const totalFrames = 20;
+
+    function updateMap() {
+      const frame = Number(timeline.value);
+
+      const fileName = String(frame).padStart(2, "0");
+
+      map.src = "images/" + fileName + ".webp";
+
+      counter.textContent =
+        "Map " + (frame + 1) + " of " + totalFrames;
+
+      previous.disabled = frame === 0;
+      next.disabled = frame === totalFrames - 1;
+    }
+
+    function changeFrame(direction) {
+      const current = Number(timeline.value);
+
+      timeline.value = Math.max(
+        0,
+        Math.min(totalFrames - 1, current + direction)
+      );
+
+      updateMap();
+    }
+
+    timeline.addEventListener("input", updateMap);
+
+    updateMap();
+  </script>
+
+</body>
+</html>
+
