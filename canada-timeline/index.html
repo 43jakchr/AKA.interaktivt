@@ -3,7 +3,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Territorial Evolution of Canada</title>
 
   <style>
@@ -12,11 +12,11 @@
     }
 
     body {
-      font-family: Roboto, Arial, sans-serif;
-      background: #ffffff;
-      color: #222;
       margin: 0;
-      padding: 15px;
+      padding: 16px;
+      font-family: Roboto, Arial, sans-serif;
+      color: #222222;
+      background: #ffffff;
     }
 
     .container {
@@ -25,9 +25,10 @@
       margin: 0 auto;
     }
 
-    h2 {
+    h1 {
       font-size: 24px;
-      margin: 0 0 15px;
+      margin: 0 0 16px;
+      color: #212c60;
     }
 
     .map {
@@ -35,6 +36,7 @@
       height: auto;
       display: block;
       border-radius: 12px;
+      border: 1px solid #dddddd;
     }
 
     .controls {
@@ -44,7 +46,15 @@
       margin-top: 15px;
     }
 
+    .counter {
+      text-align: center;
+      font-size: 15px;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
     .timeline {
+      display: block;
       width: 100%;
       accent-color: #347d76;
       cursor: pointer;
@@ -53,7 +63,7 @@
     .labels {
       display: flex;
       justify-content: space-between;
-      color: #555;
+      color: #555555;
       font-size: 13px;
       margin-top: 8px;
     }
@@ -66,17 +76,18 @@
     }
 
     button {
+      flex: 1;
       background: #347d76;
-      color: white;
+      color: #ffffff;
       border: none;
       border-radius: 8px;
-      padding: 12px 20px;
+      padding: 12px 16px;
       cursor: pointer;
       font-size: 14px;
       font-weight: 600;
     }
 
-    button:hover {
+    button:hover:not(:disabled) {
       background: #27635d;
     }
 
@@ -85,20 +96,34 @@
       cursor: not-allowed;
     }
 
-    .counter {
-      text-align: center;
-      font-size: 14px;
-      margin-bottom: 12px;
-      font-weight: 600;
+    button:focus-visible,
+    input:focus-visible {
+      outline: 3px solid #f08920;
+      outline-offset: 3px;
+    }
+
+    .credit {
+      color: #666666;
+      font-size: 12px;
+      margin-top: 14px;
+      line-height: 1.5;
+    }
+
+    .credit a {
+      color: #347d76;
     }
 
     @media (max-width: 500px) {
-      .controls {
-        padding: 15px;
+      body {
+        padding: 10px;
       }
 
-      .buttons button {
-        flex: 1;
+      h1 {
+        font-size: 20px;
+      }
+
+      .controls {
+        padding: 14px;
       }
     }
   </style>
@@ -106,15 +131,17 @@
 
 <body>
 
-  <div class="container">
+  <main class="container">
 
-    <h2>Territorial Evolution of Canada</h2>
+    <h1>Territorial Evolution of Canada</h1>
 
     <img
       id="canadaMap"
       class="map"
       src="images/00.webp"
-      alt="Historical map showing the territorial evolution of Canada"
+      alt="Historical map of Canada in 1867"
+      width="1000"
+      height="864"
     >
 
     <div class="controls">
@@ -122,6 +149,10 @@
       <div class="counter" id="counter">
         Map 1 of 20
       </div>
+
+      <label for="timeline">
+        Explore the historical changes:
+      </label>
 
       <input
         type="range"
@@ -131,7 +162,6 @@
         max="19"
         step="1"
         value="0"
-        aria-label="Select a historical map"
       >
 
       <div class="labels">
@@ -140,18 +170,29 @@
       </div>
 
       <div class="buttons">
-        <button id="previous" onclick="changeFrame(-1)">
-          &#8592; Previous
+        <button type="button" id="previous">
+          &larr; Previous
         </button>
 
-        <button id="next" onclick="changeFrame(1)">
-          Next &#8594;
+        <button type="button" id="next">
+          Next &rarr;
         </button>
       </div>
 
     </div>
 
-  </div>
+    <p class="credit">
+      Source:
+      <a
+        href="https://commons.wikimedia.org/wiki/File:Canada_provinces_evolution_2.gif"
+        target="_blank"
+        rel="noopener noreferrer"
+      >
+        Wikimedia Commons – Canada Provinces Evolution
+      </a>
+    </p>
+
+  </main>
 
   <script>
     const timeline = document.getElementById("timeline");
@@ -164,7 +205,6 @@
 
     function updateMap() {
       const frame = Number(timeline.value);
-
       const fileName = String(frame).padStart(2, "0");
 
       map.src = "images/" + fileName + ".webp";
@@ -176,16 +216,21 @@
       next.disabled = frame === totalFrames - 1;
     }
 
-    function changeFrame(direction) {
-      const current = Number(timeline.value);
-
+    previous.addEventListener("click", function () {
       timeline.value = Math.max(
         0,
-        Math.min(totalFrames - 1, current + direction)
+        Number(timeline.value) - 1
       );
-
       updateMap();
-    }
+    });
+
+    next.addEventListener("click", function () {
+      timeline.value = Math.min(
+        totalFrames - 1,
+        Number(timeline.value) + 1
+      );
+      updateMap();
+    });
 
     timeline.addEventListener("input", updateMap);
 
@@ -194,4 +239,3 @@
 
 </body>
 </html>
-
