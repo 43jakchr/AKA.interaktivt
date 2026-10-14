@@ -1,0 +1,609 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Presidential Elections – Interactive Task</title>
+
+<style>
+:root {
+  font-family: Roboto, Arial, sans-serif;
+  color: #1f272b;
+  background: #fff;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 14px;
+}
+
+main {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.heading {
+  margin: 0 0 22px;
+  font-size: 25px;
+  font-weight: 700;
+  color: #212c60;
+}
+
+.panel {
+  border: 1px solid #dce3e7;
+  border-radius: 11px;
+  overflow: hidden;
+  background: #fff;
+}
+
+.bar {
+  background: #527da6;
+  color: #fff;
+  padding: 18px 22px;
+  font-weight: 700;
+  font-size: 17px;
+}
+
+.inside {
+  padding: 20px;
+}
+
+.instructions {
+  font-size: 14px;
+  line-height: 1.65;
+  margin: 0 0 17px;
+}
+
+.task-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 0;
+  padding: 15px;
+  list-style: none;
+  border: 1px solid #d6dddd;
+  border-radius: 8px;
+}
+
+.task {
+  border: 1px solid #dbe1e3;
+  border-radius: 7px;
+  background: #f5f7f8;
+  overflow: hidden;
+}
+
+.main-row {
+  display: flex;
+  align-items: stretch;
+  min-height: 56px;
+}
+
+.handle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  touch-action: none;
+  width: 41px;
+  flex-shrink: 0;
+  border: 0;
+  border-right: 1px solid #dfe4e7;
+  background: #eaf0f1;
+  color: #5e6c75;
+  cursor: grab;
+  font-size: 23px;
+  user-select: none;
+}
+
+.handle:active {
+  cursor: grabbing;
+}
+
+.task-text {
+  font-size: 14px;
+  line-height: 1.45;
+  font-weight: 650;
+  padding: 14px 12px;
+  flex: 1;
+  align-self: center;
+}
+
+.comment-btn {
+  width: 42px;
+  border: 0;
+  border-left: 1px solid #dfe4e7;
+  background: #eaf0f1;
+  color: #344e5b;
+  cursor: pointer;
+  font-size: 19px;
+}
+
+.comment-btn[aria-expanded=true] {
+  background: #dceae7;
+  color: #276e66;
+}
+
+.comment-area {
+  padding: 12px;
+  border-top: 1px solid #dbe1e3;
+  background: #fff;
+}
+
+.comment-area label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 7px;
+}
+
+.comment-area textarea {
+  display: block;
+  width: 100%;
+  min-height: 70px;
+  resize: vertical;
+  border: 1px solid #bac9c9;
+  border-radius: 6px;
+  padding: 9px;
+  font: 14px Roboto, Arial, sans-serif;
+}
+
+.mini-tools {
+  display: flex;
+  justify-content: flex-end;
+  gap: 5px;
+  border-top: 1px solid #e4e8e9;
+  padding: 5px 7px;
+  background: #fff;
+}
+
+.mini-tools button {
+  border: 1px solid #cbd8d8;
+  background: #fff;
+  color: #46625d;
+  border-radius: 5px;
+  padding: 4px 10px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.mini-tools button:disabled {
+  opacity: .3;
+  cursor: not-allowed;
+}
+
+.task.correct {
+  border-color: #347d76;
+  background: #f1f8f6;
+}
+
+.task.incorrect {
+  border-color: #ab4f40;
+  background: #fff5f2;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 18px;
+}
+
+.actions button {
+  padding: 12px 18px;
+  border-radius: 8px;
+  border: 1px solid #347d76;
+  background: #347d76;
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.actions button.secondary {
+  background: #fff;
+  color: #347d76;
+}
+
+button:focus-visible,
+textarea:focus-visible {
+  outline: 3px solid #f08920;
+  outline-offset: 2px;
+}
+
+.feedback {
+  margin-top: 13px;
+  border-radius: 8px;
+  padding: 12px 14px;
+  background: #f1f6f6;
+  color: #294c48;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.footer {
+  font-size: 12px;
+  line-height: 1.5;
+  color: #63706f;
+  margin: 13px 0;
+}
+
+.sortable-ghost {
+  opacity: .35;
+}
+
+.sortable-chosen {
+  box-shadow: 0 3px 14px #0002;
+}
+
+@media (max-width: 520px) {
+  body {
+    padding: 7px;
+  }
+
+  .heading {
+    font-size: 21px;
+    margin-bottom: 14px;
+  }
+
+  .bar {
+    padding: 15px;
+  }
+
+  .inside {
+    padding: 13px;
+  }
+
+  .task-list {
+    padding: 9px;
+  }
+
+  .task-text {
+    font-size: 13px;
+    padding: 12px 8px;
+  }
+
+  .handle,
+  .comment-btn {
+    width: 37px;
+  }
+
+  .actions button {
+    flex: 1;
+  }
+}
+</style>
+</head>
+
+<body>
+<main>
+
+<h1 class="heading">Interactive task</h1>
+
+<section class="panel" aria-labelledby="task-title">
+  <div class="bar" id="task-title">
+    Presidential Elections
+  </div>
+
+  <div class="inside">
+
+    <p class="instructions">
+      Arrange the events in the correct order based on
+      the information given in the video. Drag the cards
+      to reorder them, or use the arrow buttons.
+      Click the speech bubbles to add more details,
+      such as the three basic requirements for becoming
+      president and when Inauguration Day takes place.
+    </p>
+
+    <ol
+      class="task-list"
+      id="list"
+      aria-label="Election events in chosen order">
+    </ol>
+
+    <div class="actions">
+      <button type="button" id="check">
+        Check order
+      </button>
+
+      <button type="button" class="secondary" id="reset">
+        Start again
+      </button>
+    </div>
+
+    <div
+      class="feedback"
+      id="feedback"
+      role="status"
+      aria-live="polite"
+      hidden>
+    </div>
+
+  </div>
+</section>
+
+<p class="footer">
+  Tip: On mobile, you can drag the left-hand handles
+  or use the up and down buttons. Your notes stay
+  attached to their cards as you reorder them.
+</p>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.6/Sortable.min.js"></script>
+
+<script>
+(function () {
+  'use strict';
+
+  // EVENTS SHOWN TO THE STUDENT
+  const items = [
+    {
+      id: 'inauguration',
+      text: 'Inauguration Day'
+    },
+    {
+      id: 'winner',
+      text: 'Winner of election is declared'
+    },
+    {
+      id: 'convention',
+      text: 'Candidates for President and VP announced at National Conventions'
+    },
+    {
+      id: 'nomination',
+      text: 'Win the Democrat/Republican party nomination'
+    },
+    {
+      id: 'campaign',
+      text: 'Presidential candidate campaigns across the US to win the votes of the people'
+    },
+    {
+      id: 'election',
+      text: 'Election Day'
+    },
+    {
+      id: 'requirements',
+      text: 'Meet the three basic requirements'
+    },
+    {
+      id: 'electoral',
+      text: 'Members of Electoral College vote'
+    }
+  ];
+
+  // CORRECT CHRONOLOGICAL ORDER
+  const solution = [
+    'requirements',
+    'nomination',
+    'convention',
+    'campaign',
+    'election',
+    'winner',
+    'electoral',
+    'inauguration'
+  ];
+
+  const notes = {};
+
+  const list = document.getElementById('list');
+  const feedback = document.getElementById('feedback');
+
+  function clearFeedback() {
+    feedback.hidden = true;
+    feedback.textContent = '';
+
+    list.querySelectorAll('.task').forEach(el => {
+      el.classList.remove('correct', 'incorrect');
+    });
+  }
+
+  function updateButtons() {
+    [...list.children].forEach((el, i) => {
+      el.querySelector('.up').disabled = i === 0;
+      el.querySelector('.down').disabled =
+        i === list.children.length - 1;
+    });
+  }
+
+  function makeItem(item) {
+    const li = document.createElement('li');
+    li.className = 'task';
+    li.dataset.id = item.id;
+
+    const row = document.createElement('div');
+    row.className = 'main-row';
+
+    // DRAG HANDLE
+    const handle = document.createElement('button');
+    handle.type = 'button';
+    handle.className = 'handle';
+    handle.textContent = '⠿';
+    handle.setAttribute(
+      'aria-label',
+      'Drag to reorder ' + item.text
+    );
+    handle.title = 'Drag to reorder';
+
+    const name = document.createElement('span');
+    name.className = 'task-text';
+    name.textContent = item.text;
+
+    // COMMENT BUTTON
+    const bubble = document.createElement('button');
+    bubble.type = 'button';
+    bubble.className = 'comment-btn';
+    bubble.textContent = '💬';
+    bubble.setAttribute(
+      'aria-label',
+      'Add or edit notes for ' + item.text
+    );
+    bubble.setAttribute('aria-expanded', 'false');
+
+    // NOTES
+    const area = document.createElement('div');
+    area.className = 'comment-area';
+    area.hidden = true;
+
+    const label = document.createElement('label');
+    label.textContent = 'Your notes';
+
+    const textarea = document.createElement('textarea');
+    textarea.placeholder = 'Add details from the video…';
+    textarea.setAttribute(
+      'aria-label',
+      'Notes for ' + item.text
+    );
+    textarea.value = notes[item.id] || '';
+
+    textarea.addEventListener('input', () => {
+      notes[item.id] = textarea.value;
+    });
+
+    area.append(label, textarea);
+
+    bubble.addEventListener('click', () => {
+      area.hidden = !area.hidden;
+
+      bubble.setAttribute(
+        'aria-expanded',
+        String(!area.hidden)
+      );
+
+      if (!area.hidden) {
+        textarea.focus();
+      }
+    });
+
+    row.append(handle, name, bubble);
+    li.append(row, area);
+
+    // MOVE BUTTONS
+    const move = document.createElement('div');
+    move.className = 'mini-tools';
+
+    const up = document.createElement('button');
+    up.type = 'button';
+    up.className = 'up';
+    up.textContent = '↑ Move up';
+
+    up.setAttribute(
+      'aria-label',
+      'Move ' + item.text + ' up'
+    );
+
+    up.onclick = () => {
+      const prev = li.previousElementSibling;
+
+      if (prev) {
+        list.insertBefore(li, prev);
+        updateButtons();
+        clearFeedback();
+      }
+    };
+
+    const down = document.createElement('button');
+    down.type = 'button';
+    down.className = 'down';
+    down.textContent = '↓ Move down';
+
+    down.setAttribute(
+      'aria-label',
+      'Move ' + item.text + ' down'
+    );
+
+    down.onclick = () => {
+      const next = li.nextElementSibling;
+
+      if (next) {
+        list.insertBefore(next, li);
+        updateButtons();
+        clearFeedback();
+      }
+    };
+
+    move.append(up, down);
+    li.append(move);
+
+    return li;
+  }
+
+  function populate() {
+    list.replaceChildren(...items.map(makeItem));
+    updateButtons();
+    clearFeedback();
+  }
+
+  // CHECK ANSWERS
+  document.getElementById('check')
+    .addEventListener('click', () => {
+
+      const actual = [...list.children].map(
+        el => el.dataset.id
+      );
+
+      let total = 0;
+
+      actual.forEach((id, i) => {
+        const good = id === solution[i];
+
+        list.children[i].classList.add(
+          good ? 'correct' : 'incorrect'
+        );
+
+        if (good) {
+          total++;
+        }
+      });
+
+      feedback.hidden = false;
+
+      feedback.textContent =
+        total === solution.length
+          ? 'Correct! All eight events are in the right order.'
+          : total + ' of ' + solution.length +
+            ' events are in the correct position. ' +
+            'Adjust the highlighted cards and try again.';
+    });
+
+  // RESET TASK
+  document.getElementById('reset')
+    .addEventListener('click', () => {
+
+      Object.keys(notes).forEach(
+        key => delete notes[key]
+      );
+
+      populate();
+    });
+
+  populate();
+
+  // DRAG AND DROP
+  if (window.Sortable) {
+    new Sortable(list, {
+      animation: 160,
+      handle: '.handle',
+      ghostClass: 'sortable-ghost',
+      chosenClass: 'sortable-chosen',
+
+      onEnd: () => {
+        updateButtons();
+        clearFeedback();
+      }
+    });
+  } else {
+    document.querySelector('.footer').textContent =
+      'Use the up and down buttons to put the events in order.';
+  }
+
+})();
+</script>
+
+</body>
+</html>
